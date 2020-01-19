@@ -1262,6 +1262,15 @@ describe('TypedKnexQueryBuilder', () => {
 
     });
 
+    it('should support Date columns', done => {
+        const typedKnex = new TypedKnex(knex({ client: 'postgresql' }));
+        const query = typedKnex.query(User).select(c => [c.createdAt]);
+        const queryString = query.toQuery();
+        assert.equal(queryString, 'select "users"."created_at" as "created_at" from "users"');
+
+        done();
+    })
+
     // it('should stay commented out', async done => {
     //     const typedKnex = new TypedKnex(knex({ client: 'postgresql' }));
 

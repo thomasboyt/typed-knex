@@ -643,4 +643,33 @@ describe('compile time typed-knex', function() {
         file.delete();
         done();
     });
+
+    it.only('should allow Date types in columns', done => {
+        file = project.createSourceFile(
+            'test/test.ts',
+            `
+            import * as knex from 'knex';
+            import { TypedKnex } from '../src/typedKnex';
+            import { User } from './testEntities';
+
+
+            (async () => {
+
+                const typedKnex = new TypedKnex(knex({ client: 'postgresql' }));
+                const result = await typedKnex
+                    .query(User)
+                    .select(c=>[c.createdAt])
+                    .getFirst();
+
+                console.log(result.createdAt);
+
+            })();
+        `
+        );
+
+        assert.equal(project.getPreEmitDiagnostics().length, 0);
+
+        file.delete();
+        done();
+    })
 });
